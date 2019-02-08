@@ -1,5 +1,8 @@
 package mode1719.student.ju.calendar;
 
+import android.content.DialogInterface;
+import android.content.Intent;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
@@ -25,7 +28,11 @@ public class MainActivity extends AppCompatActivity {
         datePicker.setOnDateSelectedListener(new CalendarPickerView.OnDateSelectedListener() {
             @Override
             public void onDateSelected(Date date) {
-
+                Intent intent = new Intent(MainActivity.this, DateEventActivity.class);
+                intent.putExtra("DateClicked", date);
+                System.out.println(date);
+                //date = Fri Feb 08 00:00:00 GMT+01:00 2019
+                startActivity(intent);
             }
 
             @Override

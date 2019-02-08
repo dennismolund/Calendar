@@ -5,11 +5,11 @@ import java.util.ArrayList;
 
 public class Data {
 
-    public static ArrayList<Events> EventItem = new ArrayList<>();
+    public static ArrayList<Events> eventItem = new ArrayList<>();
     static {
-        EventItem.add(new Events("Title A"));
-        EventItem.add(new Events("Title B"));
-        EventItem.add(new Events("Title C"));
+        eventItem.add(new Events("Title A"));
+        eventItem.add(new Events("Title B"));
+        eventItem.add(new Events("Title C"));
     }
 
     public static class Events{
