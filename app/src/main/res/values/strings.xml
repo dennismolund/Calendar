@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">Calendar</string>
+    <string name="back_button">X</string>
 </resources>
