@@ -13,12 +13,19 @@ import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.TextView;
 
-public class DateEventActivity extends AppCompatActivity {
+import java.util.ArrayList;
 
+
+public class DateEventActivity extends AppCompatActivity {
     Dialog myDialog;
     String _eventTitle = "";
     String _eventTime = "";
     String _eventDescription ="";
+    String _date = "";
+
+
+
+
 
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
@@ -27,10 +34,27 @@ public class DateEventActivity extends AppCompatActivity {
         myDialog = new Dialog(this);
         Button addEventButton = findViewById(R.id.addEventButton);
 
-        //Display the list items.
+
+        //get Data
+        Bundle MainIntent = getIntent().getExtras();
+        if (MainIntent != null){
+            _date = MainIntent.getString("date");
+        }
+        System.out.println(_date);
+
+        //Creating list for clicked day.
+        ArrayList<Data.Events> dayList = new ArrayList<>();
+
+        for(int i = 0; i < Data.eventItem.size();i++){
+            if(_date.equals(Data.eventItem.get(i).date)){
+                dayList.add(Data.eventItem.get(i));
+            }
+        }
+
+        //Display list
         ListView EventList = (ListView) findViewById(R.id.eventList);
         EventList.setAdapter(new ArrayAdapter<Data.Events>(
-                this, android.R.layout.simple_list_item_1, Data.eventItem));
+                this, android.R.layout.simple_list_item_1, dayList));
 
 
         //Triggers when a list item is clicked.
@@ -52,14 +76,13 @@ public class DateEventActivity extends AppCompatActivity {
             }
         });
 
-
-
         }
 
         //Display popupwindow with Editable text for our events. Create/delete functionality
         public void showPopup(DateEventActivity view, final int position){
             myDialog.setContentView(R.layout.activity_event_popup_window);
             myDialog.show();
+
 
             Button doneButton = myDialog.findViewById(R.id.doneButton);
             Button deleteButton = myDialog.findViewById(R.id.deleteButton);
@@ -77,14 +100,11 @@ public class DateEventActivity extends AppCompatActivity {
                     _eventTime = time.getText().toString();
                     _eventDescription = description.getText().toString();
                     addEvent();
+                    myDialog.dismiss();
                 }
             });
             }
             else {
-                /*_eventTitle = Data.eventItem.get(position).title;
-                _eventTime = Data.eventItem.get(position).time;
-                _eventDescription = Data.eventItem.get(position).description;*/
-
                 title.setText(Data.eventItem.get(position).title);
                 time.setText(Data.eventItem.get(position).time);
                 description.setText(Data.eventItem.get(position).description);
@@ -97,6 +117,7 @@ public class DateEventActivity extends AppCompatActivity {
                         _eventDescription = description.getText().toString();
                         deleteEvent(position);
                         addEvent();
+                        myDialog.dismiss();
                     }
                 });
 
@@ -104,21 +125,20 @@ public class DateEventActivity extends AppCompatActivity {
                     @Override
                     public void onClick(View v) {
                         deleteEvent(position);
+                        myDialog.dismiss();
                     }
                 });
             }
+
         }
 
 
         public void addEvent(){
-
-            Data.eventItem.add(new Data.Events(_eventTitle, _eventTime, _eventDescription));
-
+            Data.eventItem.add(new Data.Events(_date, _eventTitle, _eventTime, _eventDescription));
         }
 
         public void deleteEvent(int position){
             Data.eventItem.remove(position);
-            finish();
         }
 }
 
