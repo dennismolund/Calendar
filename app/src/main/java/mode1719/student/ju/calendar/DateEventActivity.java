@@ -42,7 +42,7 @@ public class DateEventActivity extends AppCompatActivity {
         }
         System.out.println(_date);
 
-        //Creating list for clicked day.
+        //Creating eventList for clicked day.
         ArrayList<Data.Events> dayList = new ArrayList<>();
 
         for(int i = 0; i < Data.eventItem.size();i++){
@@ -56,13 +56,10 @@ public class DateEventActivity extends AppCompatActivity {
         EventList.setAdapter(new ArrayAdapter<Data.Events>(
                 this, android.R.layout.simple_list_item_1, dayList));
 
-
         //Triggers when a list item is clicked.
         EventList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Data.Events clickedEvent = Data.eventItem.get(position);
-                System.out.println(position);
                 showPopup(DateEventActivity.this, position);
 
             }
@@ -78,20 +75,36 @@ public class DateEventActivity extends AppCompatActivity {
 
         }
 
-        //Display popupwindow with Editable text for our events. Create/delete functionality
-        public void showPopup(DateEventActivity view, final int position){
-            myDialog.setContentView(R.layout.activity_event_popup_window);
-            myDialog.show();
+    //Display popupwindow with Editable text for our events. Create/delete functionality
+    public void showPopup(DateEventActivity view, final int position){
+        myDialog.setContentView(R.layout.activity_event_popup_window);
+        myDialog.show();
 
 
-            Button doneButton = myDialog.findViewById(R.id.doneButton);
-            Button deleteButton = myDialog.findViewById(R.id.deleteButton);
-            final EditText title = myDialog.findViewById(R.id.eventTitle);
-            final EditText time = myDialog.findViewById(R.id.eventTime);
-            final EditText description = myDialog.findViewById(R.id.eventDescription);
+        Button doneButton = myDialog.findViewById(R.id.doneButton);
+        Button deleteButton = myDialog.findViewById(R.id.deleteButton);
+        final EditText title = myDialog.findViewById(R.id.eventTitle);
+        final EditText time = myDialog.findViewById(R.id.eventTime);
+        final EditText description = myDialog.findViewById(R.id.eventDescription);
 
 
-            if(position == -1){deleteButton.setVisibility(View.GONE);
+        if(position == -1){deleteButton.setVisibility(View.GONE);
+
+        doneButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                _eventTitle = title.getText().toString();
+                _eventTime = time.getText().toString();
+                _eventDescription = description.getText().toString();
+                addEvent();
+                myDialog.dismiss();
+            }
+        });
+        }
+        else {
+            title.setText(Data.eventItem.get(position).title);
+            time.setText(Data.eventItem.get(position).time);
+            description.setText(Data.eventItem.get(position).description);
 
             doneButton.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -99,46 +112,54 @@ public class DateEventActivity extends AppCompatActivity {
                     _eventTitle = title.getText().toString();
                     _eventTime = time.getText().toString();
                     _eventDescription = description.getText().toString();
+                    deleteEvent(position);
                     addEvent();
                     myDialog.dismiss();
                 }
             });
+
+            deleteButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    deleteEvent(position);
+                    myDialog.dismiss();
+                    onResume();
+                }
+            });
+
+
+        }
+
+    }
+
+    @Override
+    protected void onResume() {
+
+        ArrayList<Data.Events> dayList = new ArrayList<>();
+
+        for(int i = 0; i < Data.eventItem.size();i++){
+            if(_date.equals(Data.eventItem.get(i).date)){
+                dayList.add(Data.eventItem.get(i));
             }
-            else {
-                title.setText(Data.eventItem.get(position).title);
-                time.setText(Data.eventItem.get(position).time);
-                description.setText(Data.eventItem.get(position).description);
-
-                doneButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        _eventTitle = title.getText().toString();
-                        _eventTime = time.getText().toString();
-                        _eventDescription = description.getText().toString();
-                        deleteEvent(position);
-                        addEvent();
-                        myDialog.dismiss();
-                    }
-                });
-
-                deleteButton.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        deleteEvent(position);
-                        myDialog.dismiss();
-                    }
-                });
-            }
-
         }
 
+        ListView EventList = (ListView) findViewById(R.id.eventList);
+        EventList.setAdapter(new ArrayAdapter<Data.Events>(
+                this, android.R.layout.simple_list_item_1, dayList));
 
-        public void addEvent(){
-            Data.eventItem.add(new Data.Events(_date, _eventTitle, _eventTime, _eventDescription));
-        }
+        super.onResume();
+    }
 
-        public void deleteEvent(int position){
-            Data.eventItem.remove(position);
-        }
+
+    public void addEvent(){
+        Data.eventItem.add(new Data.Events(_date, _eventTitle, _eventTime, _eventDescription));
+    }
+
+    public void deleteEvent(int position){
+        Data.eventItem.remove(position);
+    }
+
+
 }
+
 
