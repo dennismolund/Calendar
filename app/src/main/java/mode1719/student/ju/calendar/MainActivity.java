@@ -33,18 +33,15 @@ public class MainActivity extends AppCompatActivity {
         datePicker.init(currentday, nextYear.getTime()).withSelectedDate(currentday);
 
 
-        ArrayList<Date> dateList = new ArrayList<>();
+        //Deleting events from past dates.
         for (int x = 0; x < Data.eventItem.size(); x++){
-
-            Date dayX = new Date();
-            String eventDay = Data.eventItem.get(x).date;
-
-            if(dayX.toString().equals(eventDay)){
-                dateList.add(dayX);
+            Date today = currentday;
+            if(today.after(Data.eventItem.get(x).date)){
+                Data.eventItem.remove(x);
             }
 
         }
-        datePicker.highlightDates(dateList);
+
 
 
 
@@ -52,7 +49,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDateSelected(Date date) {
                 Intent intent = new Intent(MainActivity.this, DateEventActivity.class);
-                intent.putExtra("date", date.toString());
+                intent.putExtra("date", date.getTime());
                 //date = Fri Feb 08 00:00:00 GMT+01:00 2019
                 startActivity(intent);
             }

@@ -14,6 +14,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.ArrayList;
+import java.util.Date;
 
 
 public class DateEventActivity extends AppCompatActivity {
@@ -21,7 +22,7 @@ public class DateEventActivity extends AppCompatActivity {
     String _eventTitle = "";
     String _eventTime = "";
     String _eventDescription ="";
-    String _date = "";
+    Date _date = new Date();
 
 
 
@@ -36,11 +37,9 @@ public class DateEventActivity extends AppCompatActivity {
 
 
         //get Data
-        Bundle MainIntent = getIntent().getExtras();
-        if (MainIntent != null){
-            _date = MainIntent.getString("date");
-        }
-        System.out.println(_date);
+        Intent mainIntent = getIntent();
+        _date.setTime(mainIntent.getLongExtra("date", -1));
+
 
         //Creating eventList for clicked day.
         ArrayList<Data.Events> dayList = new ArrayList<>();
