@@ -98,6 +98,7 @@ public class DateEventActivity extends AppCompatActivity {
                 _eventDescription = description.getText().toString();
                 addEvent();
                 myDialog.dismiss();
+                onResume();
             }
         });
         }
@@ -115,6 +116,8 @@ public class DateEventActivity extends AppCompatActivity {
                     deleteEvent(position);
                     addEvent();
                     myDialog.dismiss();
+                    onResume();
+
                 }
             });
 
